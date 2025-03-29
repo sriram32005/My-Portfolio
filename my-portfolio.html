@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sriram S - Portfolio</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3.2.0/dist/email.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -170,20 +171,20 @@
             transform: translateY(-5px);
             box-shadow: 0 8px 20px rgba(0,0,0,0.15);
         }
+        .project img {
+            height: 150px;
+            object-fit: contain;
+        }
         .project h3 {
+            height: 80px;
             color: #2c3e50;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
         .project p {
-            height: 100px;
+            height: 130px;
             color: #666;
-            margin-bottom: 30px;
             overflow: hidden;
         }
-        /* .project .btn{
-            position: relative;
-            bottom: 10px;
-        } */
         .skills-container {
             display: flex;
             flex-wrap: wrap;
@@ -442,10 +443,10 @@
                 <p class="contact-info"><i class="fa-solid fa-envelope"></i> : sriram32005@gmail.com</p>
                 <p class="contact-info"><i class="fa-solid fa-phone"></i> : +91-8667405879</p>
             </div>
-            <form id="contactForm" onsubmit="submission()">
-                <input type="text" placeholder="Your Name" required>
-                <input type="email" placeholder="Your Email" required>
-                <textarea placeholder="Your Message" rows="5" required></textarea>
+            <form id="contactForm">
+                <input type="text" placeholder="Your Name" required id="name">
+                <input type="email" placeholder="Your Email" required id="email">
+                <textarea placeholder="Your Message" rows="5" required id="message"></textarea>
                 <button type="submit" class="btn" >Send Message</button>
             </form>
         </section>
@@ -472,9 +473,49 @@
             document.body.classList.add('dark-mode');
             document.querySelector('.toggle-btn').textContent = '☀️';
         }
-        function submission(){
-            window.alert('I will get in touch with you soon😊.')
+        
+        
+        (function() {
+            // Initialize EmailJS with your User ID
+            emailjs.init("8VNnqnXs8MHQ0rT6L");
+        })();
+
+        function sendEmail(e) {
+            e.preventDefault(); // Important: Keep this to prevent form submission
+
+            const serviceID = "service_Portfolio";
+            const templateID = "template_zz58957";
+            const form = e.target;
+
+            // Show loading state
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Sending...";
+
+            emailjs.send(serviceID, templateID, {
+                to_email: "sriram32005@gmail.com",
+                name: document.getElementById("name").value,
+                email: document.getElementById("email").value,
+                message: document.getElementById("message").value
+            })
+            .then(function(response) {
+                alert("Thank you! Your message has been sent successfully.");
+                form.reset(); // Clear the form after successful submission
+            })
+            .catch(function(error) {
+                console.error("EmailJS Error:", error);
+                alert("Oops! Something went wrong. Please try again later.");
+            })
+            .finally(function() {
+                // Restore button state
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
+            });
         }
+
+        // Add event listener to your form
+        document.getElementById("contactForm").addEventListener("submit", sendEmail);
     </script>
 </body>
 </html>
